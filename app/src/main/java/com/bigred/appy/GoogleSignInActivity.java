@@ -155,6 +155,7 @@ public class GoogleSignInActivity extends AppCompatActivity
             waitForFirebaseToUpload.show();
             firebaseAuthWithGoogle(acct);
         } else {
+
             Toast.makeText(this, getString(R.string.google_sign_in_fail), Toast.LENGTH_SHORT).show();
         }
     }

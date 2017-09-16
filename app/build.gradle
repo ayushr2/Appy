@@ -38,7 +38,7 @@ dependencies {
     compile 'com.github.ivbaranov:materialfavoritebutton:0.1.4'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile files('C:/Users/User/Documents/GitHub/Appy/libs/sinch-android-rtc-3.8.0-VIDEO-SNAPSHOT.jar')
+    compile files('libs/sinch-android-rtc-3.8.0-VIDEO-SNAPSHOT.jar')
 }
 
 
