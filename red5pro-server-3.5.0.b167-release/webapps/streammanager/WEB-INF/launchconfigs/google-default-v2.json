@@ -1,0 +1,40 @@
+{
+  "launchconfig": {
+    "name": "google-default-v2",
+    "description": "This is a sample version launch configuration for development",
+    "image": "{red5pro-image-id}",
+	"version": "0.0.2",
+	
+	"targets": {
+      "target": [
+		{
+			"role": "origin",
+			"instanceType": "n1-standard-2",
+			"connectionCapacity": "2000"
+		},
+		{
+			"role": "edge",
+			"instanceType": "n1-standard-2",
+			"connectionCapacity": "2000"
+		}		
+     ]
+    },
+    
+    "properties": {
+      "property": [
+        {
+          "name": "network",
+          "value": "default"
+        }
+      ]
+    },
+    "metadata": {
+      "meta": [
+        {
+          "key": "meta-name",
+          "value": "meta-value"
+        }
+      ]
+    }
+  }
+}

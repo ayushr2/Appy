@@ -13,8 +13,6 @@ import com.sinch.android.rtc.SinchError;
 
 public class ClientProfileEditActivity extends BaseActivity{
 
-   // privateArrayList<string> schedule;
-    //privateArrayAdapter<string> adapter;
     private Button mLoginButton;
     private EditText mLoginName;
 
@@ -22,8 +20,6 @@ public class ClientProfileEditActivity extends BaseActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.clientedit);
-
-        //ListView listView = (ListView)findViewById(R.id.)
 
         mLoginName = (EditText) findViewById(R.id.aboutyou);
 
