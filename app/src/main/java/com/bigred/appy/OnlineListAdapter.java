@@ -1,5 +1,6 @@
 package com.bigred.appy;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -32,7 +33,7 @@ public class OnlineListAdapter extends RecyclerView.Adapter<OnlineListAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         final User user = onlineConsultants.get(position);
         holder.consultantName.setText(user.name);
         Picasso.with(holder.consultantProfilePic.getContext()).load(Uri.parse(user.photoUriString))
@@ -60,7 +61,9 @@ public class OnlineListAdapter extends RecyclerView.Adapter<OnlineListAdapter.Vi
         holder.wholeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // start activity for profile of consultant
+                Intent intent = new Intent(holder.wholeView.getContext(), ConsultantInfoActivity.class);
+                intent.putExtra(Constants.CONSULTANT_CLEAN_ID, user.emailClean);
+                holder.wholeView.getContext().startActivity(intent);
             }
         });
     }

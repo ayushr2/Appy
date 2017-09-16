@@ -14,4 +14,5 @@ class Constants {
     public static final String NAME = "name";
     public static final String PHOTO_URI_STRING = "uri string";
     public static final String AVAILABLE = "available";
+    public static final String CONSULTANT_CLEAN_ID = "clean id";
 }

@@ -1,11 +1,13 @@
 package com.bigred.appy;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
@@ -208,7 +210,27 @@ public class GoogleSignInActivity extends AppCompatActivity
     }
 
     private void selectIdentity() {
-        
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setIcon(getDrawable(R.drawable.logo));
+        builder.setTitle("Whom do you want to log in as?");
+        builder.setPositiveButton("Client", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                startActivity(new Intent(getApplicationContext(), ClientHomeActivity.class));
+                finish();
+            }
+        });
+        builder.setNeutralButton("Consultant", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference()
+                        .child(Constants.AVAILABLE).child(userEmailClean);
+                databaseReference.setValue(true);
+                startActivity(new Intent(getApplicationContext(), ConsultantHomeActivity.class));
+                finish();
+            }
+        });
+        builder.show();
     }
 
     private void updatePreferences(User user) {
