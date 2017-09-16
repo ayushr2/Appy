@@ -1,4 +1,4 @@
-package com.bioenable.appy;
+package com.bigred.appy;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.bioenable.appy", appContext.getPackageName());
+        assertEquals("com.bigred.appy", appContext.getPackageName());
     }
 }
