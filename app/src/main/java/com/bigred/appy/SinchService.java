@@ -1,4 +1,4 @@
-package com.sinch.android.rtc.sample.video;
+package com.bigred.appy;
 
 import com.sinch.android.rtc.AudioController;
 import com.sinch.android.rtc.ClientRegistration;
