@@ -46,7 +46,7 @@ public class ClientHomeActivity extends Activity {
     }
 
     private void setProfilePicture() {
-        profilePictureView = findViewById(R.id.profile_pic_view);
+        profilePictureView = (ImageView) findViewById(R.id.profile_pic_view);
         SharedPreferences settings = getSharedPreferences(Constants.PREF_NAME, 0);
         Picasso.with(getApplicationContext()).load(Uri.parse(settings.getString(Constants.PHOTO_URI_STRING, "")))
                 .transform(new CircleTransformation()).into(profilePictureView);
