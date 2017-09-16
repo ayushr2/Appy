@@ -1,11 +1,5 @@
 package com.sinch.android.rtc.sample.video;
 
-import com.bigred.appy.R;
-import com.sinch.android.rtc.PushPair;
-import com.sinch.android.rtc.calling.Call;
-import com.sinch.android.rtc.calling.CallEndCause;
-import com.sinch.android.rtc.video.VideoCallListener;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +7,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.bigred.appy.Constants;
+import com.bigred.appy.R;
+import com.sinch.android.rtc.PushPair;
+import com.sinch.android.rtc.calling.Call;
+import com.sinch.android.rtc.calling.CallEndCause;
+import com.sinch.android.rtc.video.VideoCallListener;
 
 import java.util.List;
 
@@ -55,9 +56,13 @@ public class IncomingCallScreenActivity extends BaseActivity {
         mAudioPlayer.stopRingtone();
         Call call = getSinchServiceInterface().getCall(mCallId);
         if (call != null) {
+//            SharedPreferences settings = getSharedPreferences(Constants.PREF_NAME, 0);
+//            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference()
+//                    .child(settings.getString(Constants.CLEAN_EMAIL, "")).child(Constants.NUM_HELPED);
             call.answer();
             Intent intent = new Intent(this, CallScreenActivity.class);
             intent.putExtra(SinchService.CALL_ID, mCallId);
+            intent.putExtra(Constants.CONSULTANT, true);
             startActivity(intent);
         } else {
             finish();

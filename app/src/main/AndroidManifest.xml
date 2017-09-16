@@ -31,5 +31,7 @@
         <activity android:name=".ClientHomeActivity" />
         <activity android:name=".ConsultantHomeActivity"/>
         <activity android:name=".ConsultantInfoActivity"/>
+        <activity android:name="com.sinch.android.rtc.sample.video.CallScreenActivity"/>
+        <activity android:name="com.sinch.android.rtc.sample.video.IncomingCallScreenActivity"/>
     </application>
 </manifest>
