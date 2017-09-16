@@ -4,4 +4,7 @@
     <string name="google_sign_in_fail">Google Sign In failed</string>
     <string name="firebase_auth_fail">Firebase Auth Failed.</string>
     <string name="connection_fail">Connection Failed</string>
+    <string name="firebase_database_error">Database Error Occured</string>
+    <string name="upload_success">Success</string>
+    <string name="upload_fail">Upload to database failed</string>
 </resources>

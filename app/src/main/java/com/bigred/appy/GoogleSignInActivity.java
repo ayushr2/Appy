@@ -1,6 +1,8 @@
 package com.bigred.appy;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,6 +30,11 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -59,6 +66,8 @@ public class GoogleSignInActivity extends AppCompatActivity
     private TextView userNameView;
     private FloatingActionButton nextButton;
     private String userEmail;
+    private ProgressDialog waitForFirebaseToUpload;
+    private String userEmailClean;
 
     /**
      * Initialises all components and sets button listeners. Check if any users are already signed in.
@@ -124,8 +133,8 @@ public class GoogleSignInActivity extends AppCompatActivity
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                //startActivity(intent);
+                Intent intent = new Intent(getApplicationContext(), HomeClientActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -195,7 +204,12 @@ public class GoogleSignInActivity extends AppCompatActivity
             userProfilePictureUri = acct.getPhotoUrl();
             userDisplayName = acct.getDisplayName();
             userEmail = acct.getEmail();
+            userEmailClean = userEmail.replace(Constants.DOT, Constants.UNDER_SCORE);
             updateUI(true);
+            waitForFirebaseToUpload = new ProgressDialog(this);
+            waitForFirebaseToUpload.setTitle("Updating Database");
+            waitForFirebaseToUpload.setMessage("Please wait...");
+            waitForFirebaseToUpload.show();
             firebaseAuthWithGoogle(acct);
         } else {
             Toast.makeText(this, getString(R.string.google_sign_in_fail), Toast.LENGTH_SHORT).show();
@@ -205,7 +219,7 @@ public class GoogleSignInActivity extends AppCompatActivity
     /**
      * This method authenticates Firebase client with the Google Signed In account. So If user signs
      * in with google successfully, they are automatically signed in with firebase which gives then
-     * access to Firebase Storage.
+     * access to Firebase.
      *
      * @param acct GoogleSignInAccount which contains the signed in google user
      * @see <a href="https://firebase.google.com/docs/auth/android/google-signin">Firebase Sign In using Google Auth</a>
@@ -217,14 +231,48 @@ public class GoogleSignInActivity extends AppCompatActivity
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Do anything if needed in future
+                            final DatabaseReference userDatabaseRef = FirebaseDatabase.getInstance().getReference()
+                                    .child(Constants.USERS_KEY).child(userEmailClean);
+                            userDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    User user;
+                                    if (dataSnapshot.getValue() == null) {
+                                        user = new User(userDisplayName, userProfilePictureUri.toString(), userEmail, userEmailClean);
+                                        userDatabaseRef.setValue(user);
+                                    } else {
+                                        user = (User) dataSnapshot.getValue();
+                                    }
+                                    updatePreferences(user);
+                                    waitForFirebaseToUpload.dismiss();
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    Toast.makeText(getApplicationContext(), getString(R.string.firebase_database_error),
+                                            Toast.LENGTH_SHORT).show();
+                                    waitForFirebaseToUpload.dismiss();
+                                }
+                            });
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(getApplicationContext(), getString(R.string.firebase_auth_fail),
                                     Toast.LENGTH_LONG).show();
+                            waitForFirebaseToUpload.dismiss();
                         }
                     }
                 });
+    }
+
+    private void updatePreferences(User user) {
+        SharedPreferences settings = getSharedPreferences(Constants.PREF_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(Constants.EMAIL, user.email);
+        editor.putString(Constants.CLEAN_EMAIL, user.emailClean);
+        editor.putString(Constants.NAME, user.name);
+        editor.putString(Constants.PHOTO_URI_STRING, user.photoUriString);
+        editor.commit();
     }
 
     /**
