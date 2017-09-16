@@ -13,6 +13,10 @@ public class User {
     public long score;
     public long numHelped;
 
+    public User() {
+
+    }
+
     public User(String name, String photoUriString, String email, String emailClean) {
         this.name = name;
         this.photoUriString = photoUriString;

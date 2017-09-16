@@ -6,12 +6,8 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -35,7 +31,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
 /**
  * This activity is responsible for Google Sign In feature. If the user is already signed in OR if
@@ -59,12 +54,8 @@ public class GoogleSignInActivity extends AppCompatActivity
     private GoogleApiClient mGoogleApiClient;
     private FirebaseAuth mAuth;
     private SignInButton signInButton;
-    private Button signOutButton;
-    private ImageView userProfilePicture;
     private Uri userProfilePictureUri;
-    private String userDisplayName;
-    private TextView userNameView;
-    private FloatingActionButton nextButton;
+    private String userName;
     private String userEmail;
     private ProgressDialog waitForFirebaseToUpload;
     private String userEmailClean;
@@ -84,35 +75,6 @@ public class GoogleSignInActivity extends AppCompatActivity
     }
 
     /**
-     * Updates the UI based on whether the user is logged in or not.
-     *
-     * @param loggedIn boolean value denoting whether user is logged in.
-     */
-    private void updateUI(boolean loggedIn) {
-        if (loggedIn) {
-            signInButton.setVisibility(View.INVISIBLE);
-            signOutButton.setVisibility(View.VISIBLE);
-            userNameView.setVisibility(View.VISIBLE);
-            userNameView.setText((userDisplayName == null) ? "" : userDisplayName);
-            nextButton.setVisibility(View.VISIBLE);
-
-            if (userProfilePicture == null) {
-                Picasso.with(this).load(R.drawable.unknown_user).into(userProfilePicture);
-            } else {
-                Picasso.with(this).load(userProfilePictureUri)
-                        .transform(new CircleTransformation())
-                        .into(userProfilePicture);
-            }
-        } else {
-            userNameView.setVisibility(View.INVISIBLE);
-            signOutButton.setVisibility(View.INVISIBLE);
-            signInButton.setVisibility(View.VISIBLE);
-            Picasso.with(this).load(R.drawable.unknown_user).into(userProfilePicture);
-            nextButton.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    /**
      * Sets button listeners for sign in and sign out buttons.
      */
     private void initialiseButtonListeners() {
@@ -120,21 +82,6 @@ public class GoogleSignInActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 signIn();
-            }
-        });
-
-        signOutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                signOut();
-            }
-        });
-
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), HomeClientActivity.class);
-                startActivity(intent);
             }
         });
     }
@@ -168,11 +115,6 @@ public class GoogleSignInActivity extends AppCompatActivity
         signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_WIDE);
         signInButton.setColorScheme(SignInButton.COLOR_DARK);
-
-        signOutButton = (Button) findViewById(R.id.sign_out_button);
-        userProfilePicture = (ImageView) findViewById(R.id.profile_picture_holder);
-        userNameView = (TextView) findViewById(R.id.user_name_view);
-        nextButton = (FloatingActionButton) findViewById(R.id.next_button);
     }
 
     /**
@@ -202,10 +144,9 @@ public class GoogleSignInActivity extends AppCompatActivity
         if (result.isSuccess()) {
             GoogleSignInAccount acct = result.getSignInAccount();
             userProfilePictureUri = acct.getPhotoUrl();
-            userDisplayName = acct.getDisplayName();
+            userName = acct.getDisplayName();
             userEmail = acct.getEmail();
             userEmailClean = userEmail.replace(Constants.DOT, Constants.UNDER_SCORE);
-            updateUI(true);
             waitForFirebaseToUpload = new ProgressDialog(this);
             waitForFirebaseToUpload.setTitle("Updating Database");
             waitForFirebaseToUpload.setMessage("Please wait...");
@@ -238,13 +179,14 @@ public class GoogleSignInActivity extends AppCompatActivity
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     User user;
                                     if (dataSnapshot.getValue() == null) {
-                                        user = new User(userDisplayName, userProfilePictureUri.toString(), userEmail, userEmailClean);
+                                        user = new User(userName, userProfilePictureUri.toString(), userEmail, userEmailClean);
                                         userDatabaseRef.setValue(user);
                                     } else {
-                                        user = (User) dataSnapshot.getValue();
+                                        user = (User) dataSnapshot.getValue(User.class);
                                     }
                                     updatePreferences(user);
                                     waitForFirebaseToUpload.dismiss();
+                                    selectIdentity();
                                 }
 
                                 @Override
@@ -263,6 +205,10 @@ public class GoogleSignInActivity extends AppCompatActivity
                         }
                     }
                 });
+    }
+
+    private void selectIdentity() {
+        
     }
 
     private void updatePreferences(User user) {
@@ -291,7 +237,7 @@ public class GoogleSignInActivity extends AppCompatActivity
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(Status status) {
-                        updateUI(false);
+
                     }
                 });
     }
@@ -304,8 +250,6 @@ public class GoogleSignInActivity extends AppCompatActivity
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
         if (opr.isDone()) {
             handleSignInResult(opr.get());
-        } else {
-            updateUI(false);
         }
     }
 
