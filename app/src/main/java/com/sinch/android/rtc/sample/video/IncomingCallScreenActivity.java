@@ -1,7 +1,11 @@
 package com.sinch.android.rtc.sample.video;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -109,12 +113,18 @@ public class IncomingCallScreenActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        answerClicked();
+    }
+
     private OnClickListener mClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.answerButton:
-                    answerClicked();
+                    requestPermissions();
                     break;
                 case R.id.declineButton:
                     declineClicked();
@@ -122,4 +132,18 @@ public class IncomingCallScreenActivity extends BaseActivity {
             }
         }
     };
+
+    private void requestPermissions() {
+        int writeExternalPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int recordAudioPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
+        int cameraPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+
+        if (writeExternalPermission != PackageManager.PERMISSION_GRANTED || recordAudioPermission != PackageManager.PERMISSION_GRANTED
+                || cameraPermission != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{ android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA}, 1);
+        } else {
+            answerClicked();
+        }
+    }
 }

@@ -18,6 +18,17 @@ android {
             proguardFile 'proguard-project.txt'
         }
     }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'src/main/AndroidManifest.xml'
+            jniLibs.srcDirs = ['libs']
+            res.srcDirs = ['src/main/res']
+            assets.srcDirs = ['src/main/assets']
+            java.srcDirs = ['src']
+            java.excludes = ['androidTest/**', 'test/**']
+        }
+    }
 }
 
 dependencies {
