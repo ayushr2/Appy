@@ -1,4 +1,4 @@
-package com.example.mariechantalttan.android_vision_master;
+package com.bigred.appy;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -11,10 +11,10 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;

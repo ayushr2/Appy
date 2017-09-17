@@ -48,6 +48,7 @@ dependencies {
     compile 'com.mikepenz:materialize:1.0.3@aar'
     compile 'com.github.ivbaranov:materialfavoritebutton:0.1.4'
     compile 'com.microsoft.projectoxford:emotion:1.0.355'
+    compile 'com.google.android.gms:play-services-vision:10.2.1'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile files('libs/sinch-android-rtc-3.8.0-VIDEO-SNAPSHOT.jar')
