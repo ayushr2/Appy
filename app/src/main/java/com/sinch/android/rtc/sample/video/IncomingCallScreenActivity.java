@@ -1,18 +1,23 @@
 package com.sinch.android.rtc.sample.video;
 
-import com.bigred.appy.R;
-import com.sinch.android.rtc.PushPair;
-import com.sinch.android.rtc.calling.Call;
-import com.sinch.android.rtc.calling.CallEndCause;
-import com.sinch.android.rtc.video.VideoCallListener;
-
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.bigred.appy.Constants;
+import com.bigred.appy.R;
+import com.sinch.android.rtc.PushPair;
+import com.sinch.android.rtc.calling.Call;
+import com.sinch.android.rtc.calling.CallEndCause;
+import com.sinch.android.rtc.video.VideoCallListener;
 
 import java.util.List;
 
@@ -55,9 +60,13 @@ public class IncomingCallScreenActivity extends BaseActivity {
         mAudioPlayer.stopRingtone();
         Call call = getSinchServiceInterface().getCall(mCallId);
         if (call != null) {
+//            SharedPreferences settings = getSharedPreferences(Constants.PREF_NAME, 0);
+//            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference()
+//                    .child(settings.getString(Constants.CLEAN_EMAIL, "")).child(Constants.NUM_HELPED);
             call.answer();
             Intent intent = new Intent(this, CallScreenActivity.class);
             intent.putExtra(SinchService.CALL_ID, mCallId);
+            intent.putExtra(Constants.CONSULTANT, true);
             startActivity(intent);
         } else {
             finish();
@@ -104,12 +113,18 @@ public class IncomingCallScreenActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        answerClicked();
+    }
+
     private OnClickListener mClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.answerButton:
-                    answerClicked();
+                    requestPermissions();
                     break;
                 case R.id.declineButton:
                     declineClicked();
@@ -117,4 +132,18 @@ public class IncomingCallScreenActivity extends BaseActivity {
             }
         }
     };
+
+    private void requestPermissions() {
+        int writeExternalPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int recordAudioPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
+        int cameraPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+
+        if (writeExternalPermission != PackageManager.PERMISSION_GRANTED || recordAudioPermission != PackageManager.PERMISSION_GRANTED
+                || cameraPermission != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{ android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA}, 1);
+        } else {
+            answerClicked();
+        }
+    }
 }

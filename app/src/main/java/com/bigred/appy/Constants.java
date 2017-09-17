@@ -4,7 +4,7 @@ package com.bigred.appy;
  * Created by ayushranjan on 16/09/17.
  */
 
-class Constants {
+public class Constants {
     public static final String USERS_KEY = "users";
     public static final char UNDER_SCORE = '_';
     public static final char DOT = '.';
@@ -15,4 +15,6 @@ class Constants {
     public static final String PHOTO_URI_STRING = "uri string";
     public static final String AVAILABLE = "available";
     public static final String CONSULTANT_CLEAN_ID = "clean id";
+    public static final String NUM_HELPED = "numHelped";
+    public static final String CONSULTANT = "consultant";
 }

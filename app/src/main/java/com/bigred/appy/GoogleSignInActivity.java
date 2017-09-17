@@ -231,6 +231,7 @@ public class GoogleSignInActivity extends AppCompatActivity
                 finish();
             }
         });
+        builder.setCancelable(false);
         builder.show();
     }
 

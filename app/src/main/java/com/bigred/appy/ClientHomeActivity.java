@@ -1,15 +1,24 @@
 package com.bigred.appy;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,10 +29,13 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 /**
- * Created by ayushranjan on 16/09/17.
+ * @author ayushranjan
+ * @since 16/09/17.
  */
 
-public class ClientHomeActivity extends Activity {
+public class ClientHomeActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+
+    GoogleApiClient mGoogleApiClient;
 
     ArrayList<User> users = new ArrayList<>();
     OnlineListAdapter onlineListAdapter;
@@ -36,6 +48,26 @@ public class ClientHomeActivity extends Activity {
 
         setProfilePicture();
 
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API)
+                .build();
+
+        Button signOutButton = (Button) findViewById(R.id.log_out_btn);
+        signOutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mGoogleApiClient.isConnected()) {
+                    signOut();
+                    Intent intent = new Intent(getApplicationContext(), GoogleSignInActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
+                }
+
+            }
+        });
+
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.recycle_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
@@ -43,6 +75,19 @@ public class ClientHomeActivity extends Activity {
         mRecyclerView.setAdapter(onlineListAdapter);
 
         updateRecycleView();
+    }
+
+    /**
+     * Signs out the current user and updates the user upon logout.
+     */
+    private void signOut() {
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+
+                    }
+                });
     }
 
     private void setProfilePicture() {
@@ -97,5 +142,24 @@ public class ClientHomeActivity extends Activity {
 
             }
         });
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
     }
 }

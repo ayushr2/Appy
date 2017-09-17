@@ -18,6 +18,17 @@ android {
             proguardFile 'proguard-project.txt'
         }
     }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'src/main/AndroidManifest.xml'
+            jniLibs.srcDirs = ['libs']
+            res.srcDirs = ['src/main/res']
+            assets.srcDirs = ['src/main/assets']
+            java.srcDirs = ['src']
+            java.excludes = ['androidTest/**', 'test/**']
+        }
+    }
 }
 
 dependencies {
@@ -36,6 +47,7 @@ dependencies {
     compile 'com.google.firebase:firebase-storage:10.2.1'
     compile 'com.mikepenz:materialize:1.0.3@aar'
     compile 'com.github.ivbaranov:materialfavoritebutton:0.1.4'
+    compile 'com.microsoft.projectoxford:emotion:1.0.355'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile files('libs/sinch-android-rtc-3.8.0-VIDEO-SNAPSHOT.jar')
