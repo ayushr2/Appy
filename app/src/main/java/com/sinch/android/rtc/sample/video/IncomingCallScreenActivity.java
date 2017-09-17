@@ -60,9 +60,6 @@ public class IncomingCallScreenActivity extends BaseActivity {
         mAudioPlayer.stopRingtone();
         Call call = getSinchServiceInterface().getCall(mCallId);
         if (call != null) {
-//            SharedPreferences settings = getSharedPreferences(Constants.PREF_NAME, 0);
-//            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference()
-//                    .child(settings.getString(Constants.CLEAN_EMAIL, "")).child(Constants.NUM_HELPED);
             call.answer();
             Intent intent = new Intent(this, CallScreenActivity.class);
             intent.putExtra(SinchService.CALL_ID, mCallId);

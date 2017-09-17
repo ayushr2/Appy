@@ -1,6 +1,13 @@
 package com.sinch.android.rtc.sample.video;
 
+import com.bigred.appy.Constants;
 import com.bigred.appy.R;
+import com.bigred.appy.User;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sinch.android.rtc.AudioController;
 import com.sinch.android.rtc.PushPair;
 import com.sinch.android.rtc.calling.Call;
@@ -9,6 +16,7 @@ import com.sinch.android.rtc.calling.CallState;
 import com.sinch.android.rtc.video.VideoCallListener;
 import com.sinch.android.rtc.video.VideoController;
 
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -43,6 +51,10 @@ public class CallScreenActivity extends BaseActivity {
     private TextView mCallDuration;
     private TextView mCallState;
     private TextView mCallerName;
+
+    private boolean isConsultant;
+    private String consultantCleanId;
+    private long scoreEarned;
 
     private class UpdateCallDurationTask extends TimerTask {
 
@@ -86,6 +98,11 @@ public class CallScreenActivity extends BaseActivity {
                 endCall();
             }
         });
+
+        isConsultant = getIntent().getExtras().getBoolean(Constants.CONSULTANT, false);
+        SharedPreferences settings = getSharedPreferences(Constants.PREF_NAME, 0);
+        consultantCleanId = settings.getString(Constants.CLEAN_EMAIL, "");
+        scoreEarned = 0;
 
         mCallId = getIntent().getStringExtra(SinchService.CALL_ID);
         if (savedInstanceState == null) {
@@ -210,13 +227,30 @@ public class CallScreenActivity extends BaseActivity {
 
         @Override
         public void onCallEnded(Call call) {
+            if (isConsultant) {
+                final DatabaseReference consultantReference = FirebaseDatabase.getInstance().getReference()
+                        .child(Constants.USERS_KEY).child(consultantCleanId);
+                consultantReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        User consultant = dataSnapshot.getValue(User.class);
+                        consultant.numHelped++;
+                        consultant.score += scoreEarned;
+                        consultantReference.setValue(consultant);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+
             CallEndCause cause = call.getDetails().getEndCause();
-            Log.d(TAG, "Call ended. Reason: " + cause.toString());
             mAudioPlayer.stopProgressTone();
             setVolumeControlStream(AudioManager.USE_DEFAULT_STREAM_TYPE);
             String endMsg = "Call ended: " + call.getDetails().toString();
             Toast.makeText(CallScreenActivity.this, endMsg, Toast.LENGTH_LONG).show();
-
             endCall();
         }
 

@@ -57,14 +57,7 @@ public class ClientHomeActivity extends AppCompatActivity implements GoogleApiCl
         signOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mGoogleApiClient.isConnected()) {
-                    signOut();
-                    Intent intent = new Intent(getApplicationContext(), GoogleSignInActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
-                }
-
+                signOutAndFinish();
             }
         });
 
@@ -144,6 +137,16 @@ public class ClientHomeActivity extends AppCompatActivity implements GoogleApiCl
         });
     }
 
+    private void signOutAndFinish() {
+        if (mGoogleApiClient.isConnected()) {
+            signOut();
+        }
+        Intent intent = new Intent(getApplicationContext(), GoogleSignInActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
+
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
@@ -161,5 +164,10 @@ public class ClientHomeActivity extends AppCompatActivity implements GoogleApiCl
         if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        signOutAndFinish();
     }
 }

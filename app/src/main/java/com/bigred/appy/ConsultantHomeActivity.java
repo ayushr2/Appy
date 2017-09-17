@@ -62,7 +62,7 @@ public class ConsultantHomeActivity extends BaseActivity implements GoogleApiCli
 
         if (writeExternalPermission != PackageManager.PERMISSION_GRANTED || recordAudioPermission != PackageManager.PERMISSION_GRANTED
                 || cameraPermission != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{ android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA}, 1);
         }
     }
@@ -96,16 +96,20 @@ public class ConsultantHomeActivity extends BaseActivity implements GoogleApiCli
         signOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mGoogleApiClient.isConnected()) {
-                    signOut();
-                    Intent intent = new Intent(getApplicationContext(), GoogleSignInActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
-                }
+                signOutAndFinish();
 
             }
         });
+    }
+
+    private void signOutAndFinish() {
+        if (mGoogleApiClient.isConnected()) {
+            signOut();
+        }
+        Intent intent = new Intent(getApplicationContext(), GoogleSignInActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 
     /**
@@ -137,6 +141,19 @@ public class ConsultantHomeActivity extends BaseActivity implements GoogleApiCli
     protected void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
+        addToAvailable();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        addToAvailable();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        addToAvailable();
     }
 
     @Override
@@ -145,6 +162,7 @@ public class ConsultantHomeActivity extends BaseActivity implements GoogleApiCli
         if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
+        removeFromAvailable();
     }
 
     @Override
@@ -153,11 +171,13 @@ public class ConsultantHomeActivity extends BaseActivity implements GoogleApiCli
         if (mSpinner != null) {
             mSpinner.dismiss();
         }
+        removeFromAvailable();
     }
 
     @Override
     public void onStarted() {
         mSpinner.dismiss();
+        addToAvailable();
     }
 
     @Override
@@ -166,20 +186,12 @@ public class ConsultantHomeActivity extends BaseActivity implements GoogleApiCli
         logInToVideoCallService();
     }
 
-    private void logInToVideoCallService() {
-        if (!getSinchServiceInterface().isStarted()) {
-            getSinchServiceInterface().startClient(settings.getString(Constants.CLEAN_EMAIL, ""));
-            showSpinner();
-        } else {
-            mSpinner.dismiss();
-        }
-    }
-
     @Override
     protected void onPause() {
         if (mSpinner != null) {
             mSpinner.dismiss();
         }
+        removeFromAvailable();
         super.onPause();
     }
 
@@ -188,9 +200,36 @@ public class ConsultantHomeActivity extends BaseActivity implements GoogleApiCli
         if (getSinchServiceInterface() != null) {
             getSinchServiceInterface().stopClient();
         }
+        removeFromAvailable();
+        super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        signOutAndFinish();
+        removeFromAvailable();
+    }
+
+    private void addToAvailable() {
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference()
+                .child(Constants.AVAILABLE).child(settings.getString(Constants.CLEAN_EMAIL, ""));
+        databaseReference.setValue(true);
+    }
+
+    private void removeFromAvailable() {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference()
                 .child(Constants.AVAILABLE).child(settings.getString(Constants.CLEAN_EMAIL, ""));
         databaseReference.setValue(null);
-        super.onDestroy();
+    }
+
+    private void logInToVideoCallService() {
+        if (!getSinchServiceInterface().isStarted()) {
+            getSinchServiceInterface().startClient(settings.getString(Constants.CLEAN_EMAIL, ""));
+            showSpinner();
+        } else {
+            if (mSpinner != null) {
+                mSpinner.dismiss();
+            }
+        }
     }
 }

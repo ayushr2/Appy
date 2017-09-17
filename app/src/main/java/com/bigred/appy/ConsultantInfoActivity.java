@@ -134,7 +134,9 @@ public class ConsultantInfoActivity extends BaseActivity implements SinchService
             getSinchServiceInterface().startClient(settings.getString(Constants.CLEAN_EMAIL, ""));
             showSpinner();
         } else {
-            mSpinner.dismiss();
+            if (mSpinner != null) {
+                mSpinner.dismiss();
+            }
             callButton.setEnabled(true);
         }
     }
@@ -148,10 +150,7 @@ public class ConsultantInfoActivity extends BaseActivity implements SinchService
     }
 
     @Override
-    public void onDestroy() {
-        if (getSinchServiceInterface() != null) {
-            getSinchServiceInterface().stopClient();
-        }
-        super.onDestroy();
+    public void onBackPressed() {
+        finish();
     }
 }
