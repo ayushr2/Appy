@@ -1,4 +1,4 @@
-package com.example.mariechantalttan.android_vision_master;
+package com.bigred.appy;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -19,11 +19,9 @@ import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
-
 import java.io.IOException;
 
 public class ComputerVision extends AppCompatActivity {
