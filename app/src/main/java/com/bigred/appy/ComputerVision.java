@@ -1,4 +1,4 @@
-package com.bigred.appy;
+package main.java.com.bigred.appy;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -19,9 +19,12 @@ import android.util.SparseArray;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+
+import com.bigred.appy.R;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
+
 import java.io.IOException;
 
 public class ComputerVision extends AppCompatActivity {

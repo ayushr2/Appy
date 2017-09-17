@@ -1,12 +1,9 @@
-package com.sinch.android.rtc.sample.video;
+package main.java.com.sinch.android.rtc.sample.video;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.app.Activity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import com.bigred.appy.R;
 

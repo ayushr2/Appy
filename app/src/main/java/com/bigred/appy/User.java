@@ -1,4 +1,4 @@
-package com.bigred.appy;
+package main.java.com.bigred.appy;
 
 /**
  * @author Ayush Ranjan

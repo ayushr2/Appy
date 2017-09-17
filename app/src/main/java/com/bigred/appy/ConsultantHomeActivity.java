@@ -1,4 +1,4 @@
-package com.bigred.appy;
+package main.java.com.bigred.appy;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bigred.appy.R;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -28,9 +29,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sinch.android.rtc.SinchError;
-import com.sinch.android.rtc.sample.video.BaseActivity;
-import com.sinch.android.rtc.sample.video.SinchService;
 import com.squareup.picasso.Picasso;
+
+import main.java.com.sinch.android.rtc.sample.video.BaseActivity;
+import main.java.com.sinch.android.rtc.sample.video.SinchService;
 
 /**
  * @author Ayush Ranjan

@@ -1,28 +1,27 @@
-package com.bigred.appy;
+package main.java.com.bigred.appy;
 
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+
+import com.bigred.appy.R;
 import com.microsoft.projectoxford.emotion.EmotionServiceClient;
 import com.microsoft.projectoxford.emotion.EmotionServiceRestClient;
-import com.microsoft.projectoxford.emotion.contract.Scores;
 import com.microsoft.projectoxford.emotion.contract.RecognizeResult;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.UUID;
+import com.microsoft.projectoxford.emotion.contract.Scores;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Collections;
+import java.util.List;
 
 public class ComputerVisionScan extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.bigred.appy;
+package main.java.com.bigred.appy;
 
 /**
  * Created by ayushranjan on 16/09/17.

@@ -1,4 +1,4 @@
-package com.sinch.android.rtc.sample.video;
+package main.java.com.sinch.android.rtc.sample.video;
 
 import android.Manifest;
 import android.content.Intent;
@@ -12,7 +12,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.bigred.appy.Constants;
 import com.bigred.appy.R;
 import com.sinch.android.rtc.PushPair;
 import com.sinch.android.rtc.calling.Call;
@@ -20,6 +19,8 @@ import com.sinch.android.rtc.calling.CallEndCause;
 import com.sinch.android.rtc.video.VideoCallListener;
 
 import java.util.List;
+
+import main.java.com.bigred.appy.Constants;
 
 public class IncomingCallScreenActivity extends BaseActivity {
 

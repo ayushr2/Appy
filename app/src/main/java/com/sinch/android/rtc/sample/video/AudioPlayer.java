@@ -1,4 +1,4 @@
-package com.sinch.android.rtc.sample.video;
+package main.java.com.sinch.android.rtc.sample.video;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;

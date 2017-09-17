@@ -1,20 +1,4 @@
-package com.sinch.android.rtc.sample.video;
-
-import com.bigred.appy.Constants;
-import com.bigred.appy.R;
-import com.bigred.appy.User;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.sinch.android.rtc.AudioController;
-import com.sinch.android.rtc.PushPair;
-import com.sinch.android.rtc.calling.Call;
-import com.sinch.android.rtc.calling.CallEndCause;
-import com.sinch.android.rtc.calling.CallState;
-import com.sinch.android.rtc.video.VideoCallListener;
-import com.sinch.android.rtc.video.VideoController;
+package main.java.com.sinch.android.rtc.sample.video;
 
 import android.content.SharedPreferences;
 import android.media.AudioManager;
@@ -28,10 +12,27 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bigred.appy.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.sinch.android.rtc.AudioController;
+import com.sinch.android.rtc.PushPair;
+import com.sinch.android.rtc.calling.Call;
+import com.sinch.android.rtc.calling.CallEndCause;
+import com.sinch.android.rtc.calling.CallState;
+import com.sinch.android.rtc.video.VideoCallListener;
+import com.sinch.android.rtc.video.VideoController;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import main.java.com.bigred.appy.Constants;
+import main.java.com.bigred.appy.User;
 
 public class CallScreenActivity extends BaseActivity {
 
